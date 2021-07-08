@@ -1,0 +1,33 @@
+name: "artifactory publish"
+description: "Uploads artif"
+
+inputs:
+  host:
+    description: 'Artifactory hostname'
+    required: true
+  username:
+    description: 'Artifactory username'
+    required: true
+  password:
+    description: 'Artifactory password'
+    required: true
+  name:
+    description: ''
+    required: true
+  group:
+    description: ''
+    required: true
+  buildDir:
+    description: ''
+    required: true
+  version:
+    description: ''
+    required: true
+
+runs:
+  using: 'node12'
+  main: 'index.js'
+
+branding:
+  icon: refresh-cw
+  color: blue

@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "@actions/core": "^1.4.0",
+    "node-fetch": "^2.6.1",
+    "zip-a-folder": "^1.1.0"
+  },
+  "scripts": {
+    "test": "jest --passWithNoTests"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6"
+  }
+}
