@@ -27,6 +27,10 @@ inputs:
   version:
     description: 'Artifact version'
     required: true
+  tycho:
+    description: 'Tycho file path'
+    required: true
+    default: './tycho.yaml'
 
 runs:
   using: 'node12'
