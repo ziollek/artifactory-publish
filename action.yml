@@ -1,6 +1,10 @@
 name: "artifactory publish"
 description: "Uploads artif"
 
+outputs:
+  url:
+    description: "artifact url"
+
 inputs:
   host:
     description: 'Artifactory hostname'
@@ -12,16 +16,16 @@ inputs:
     description: 'Artifactory password'
     required: true
   name:
-    description: ''
+    description: 'Artifact name'
     required: true
   group:
-    description: ''
+    description: 'Artifact group'
     required: true
   buildDir:
-    description: ''
+    description: 'Directory to make artifact from'
     required: true
   version:
-    description: ''
+    description: 'Artifact version'
     required: true
 
 runs:

@@ -30,6 +30,7 @@ exec(`zip --quiet --symlinks --recurse-paths "${deployPackage}" ${buildDir} --ex
             console.error(err);
             process.exit(1);
         });
+    core.setOutput('url', `https://${host}/artifactory/allegro-${isSnapshot ? 'snapshots' : 'releases'}-local/${targetPath}/${name}/${targetVersion}/${deployPackage}`);
 });
 
 
