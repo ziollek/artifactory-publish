@@ -15,11 +15,10 @@ const tychoPath = core.getInput('tycho');
 const targetPath = group.replace(/\./g, '/');
 const isSnapshot = version.endsWith('-SNAPSHOT');
 
-const deployPackage = name + "-" + version + '-deploy.zip';// : version + '-deploy.zip';
+const deployPackage = version + '-deploy.zip';
 exec(`zip --quiet --symlinks --recurse-paths "${deployPackage}" ${buildDir} --exclude "${deployPackage}"`, (error) => {
     if (error) {
-        // console.error(`package ${deployPackage}`);
-        console.error(`exec error: ${error} package: ${deployPackage}`);
+        console.error(`exec error: ${error}`);
         process.exit(1);
     }
 
