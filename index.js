@@ -15,7 +15,7 @@ const tychoPath = core.getInput('tycho');
 const targetPath = group.replace(/\./g, '/');
 const isSnapshot = version.endsWith('-SNAPSHOT');
 
-const deployPackage = version + '-deploy.zip';
+const deployPackage = isSnapshot ? name + "-" + version + '-deploy.zip' : version + '-deploy.zip';
 exec(`zip --quiet --symlinks --recurse-paths "${deployPackage}" ${buildDir} --exclude "${deployPackage}"`, (error) => {
     if (error) {
         console.error(`exec error: ${error}`);
@@ -23,16 +23,15 @@ exec(`zip --quiet --symlinks --recurse-paths "${deployPackage}" ${buildDir} --ex
     }
 
     const targetVersion = isSnapshot ? version : version.substring(version.lastIndexOf('-') + 1, version.length);
-    const filename = isSnapshot ? `${name}-${deployPackage}` : deployPackage;
-    const artifactoryUrl = `https://${username}:${password}@${host}/artifactory/allegro-${isSnapshot ? 'snapshots' : 'releases'}-local/${targetPath}/${name}/${targetVersion}/${filename}`;
-    const data = fs.readFileSync(filename);
+    const artifactoryUrl = `https://${username}:${password}@${host}/artifactory/allegro-${isSnapshot ? 'snapshots' : 'releases'}-local/${targetPath}/${name}/${targetVersion}/${deployPackage}`;
+    const data = fs.readFileSync(deployPackage);
     fetch(artifactoryUrl, { method: 'PUT', body: data })
         .then(response => console.log(`${deployPackage} uploaded! Artifactory response: ${response.status}`))
         .catch(err => {
             console.error(err);
             process.exit(1);
         });
-    core.setOutput('url', `https://${host}/artifactory/allegro-${isSnapshot ? 'snapshots' : 'releases'}-local/${targetPath}/${name}/${targetVersion}/${filename}`);
+    core.setOutput('url', `https://${host}/artifactory/allegro-${isSnapshot ? 'snapshots' : 'releases'}-local/${targetPath}/${name}/${targetVersion}/${deployPackage}`);
 });
 
 
