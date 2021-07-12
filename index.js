@@ -36,7 +36,7 @@ exec(`zip --quiet --symlinks --recurse-paths "${deployPackage}" ${buildDir} --ex
 
 
 if (fs.existsSync(tychoPath)) {
-    const provisioningPackage = version + '-provisioning.zip';
+    const provisioningPackage = name + '-' + version + '-provisioning.zip';
 
     fs.writeFileSync('dependencies.yml', `datasources:\nservices:\n`);
     fs.writeFileSync('environment-variables.yml', `envs:\n`);
