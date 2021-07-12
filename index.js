@@ -23,7 +23,8 @@ exec(`zip --quiet --symlinks --recurse-paths "${deployPackage}" ${buildDir} --ex
     }
 
     const targetVersion = isSnapshot ? version : version.substring(version.lastIndexOf('-') + 1, version.length);
-    const artifactoryUrl = `https://${username}:${password}@${host}/artifactory/allegro-${isSnapshot ? 'snapshots' : 'releases'}-local/${targetPath}/${name}/${targetVersion}/${deployPackage}`;
+    const filename = isSnapshot ? `${name}-${deployPackage}` : deployPackage;
+    const artifactoryUrl = `https://${username}:${password}@${host}/artifactory/allegro-${isSnapshot ? 'snapshots' : 'releases'}-local/${targetPath}/${name}/${targetVersion}/${filename}`;
     const data = fs.readFileSync(deployPackage);
     fetch(artifactoryUrl, { method: 'PUT', body: data })
         .then(response => console.log(`${deployPackage} uploaded! Artifactory response: ${response.status}`))
