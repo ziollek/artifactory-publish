@@ -1,0 +1,45 @@
+name: "artifactory maven publish"
+description: "Uploads artifact to maven"
+
+outputs:
+  url:
+    description: "artifact url"
+
+inputs:
+  host:
+    description: 'Artifactory hostname'
+    required: true
+  username:
+    description: 'Artifactory username'
+    required: true
+  password:
+    description: 'Artifactory password'
+    required: true
+  group:
+    description: 'Artifact group'
+    required: true
+  name:
+    description: 'Artifact name'
+    required: true
+  version:
+    description: 'Artifact version'
+    required: true
+  buildDir:
+    description: 'Directory to make artifact from'
+    required: false
+  distributionsDir:
+    description: 'Directory to distributions zip'
+    required: false
+    default: './build/distributions'
+  tycho:
+    description: 'Tycho file path'
+    required: true
+    default: './tycho.yaml'
+
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+
+branding:
+  icon: refresh-cw
+  color: blue

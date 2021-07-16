@@ -1,0 +1,34 @@
+name: "artifactory dokcer publish"
+description: "Uploads artifact to dockerhub"
+
+outputs:
+  url:
+    description: "artifact url"
+
+inputs:
+  host:
+    description: 'Artifactory hostname'
+    required: true
+  username:
+    description: 'Artifactory username'
+    required: true
+  password:
+    description: 'Artifactory password'
+    required: true
+  path:
+    description: 'Artifact path'
+    required: true
+  name:
+    description: 'Artifact name'
+    required: true
+  version:
+    description: 'Artifact version'
+    required: true
+
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+
+branding:
+  icon: refresh-cw
+  color: blue

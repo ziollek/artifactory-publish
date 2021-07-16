@@ -1,0 +1,134 @@
+[![CI](https://github.com/allegro-actions/artifactory-publish/actions/workflows/ci.yml/badge.svg)](https://github.com/allegro-actions/artifactory-publish/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/allegro-actions/artifactory-publish/branch/main/graph/badge.svg?token=YNK3XCBRY4)](https://codecov.io/gh/allegro-actions/artifactory-publish)
+
+# allegro-actions/artifactory-publish (BETA)
+
+Action created for easy artifactory publications.
+
+## artifactory-publish/maven
+
+This action packages (zip) and uploads your application to artifactory. By default, it handles fat-jars. This action can
+also be used to package a directory.
+
+### Basic usage:
+
+```
+steps:
+  - uses: allegro-actions/artifactory-publish/maven@v1
+    with:
+      host: company.artifactory.allegro
+      username: ${{ secrets.ARTIFACTORY_USERNAME }}
+      password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+      name: opbox-core
+      group: pl.allegro.opbox
+      version: 1.0.0-SNAPSHOT
+```
+
+or
+
+```
+steps:
+  - uses: allegro-actions/artifactory-publish/maven@v1
+    with:
+      host: company.artifactory.allegro
+      username: ${{ secrets.ARTIFACTORY_USERNAME }}
+      password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+      name: opbox-core
+      group: pl.allegro.opbox
+      buildDir: ./build
+      version: 1.0.0-SNAPSHOT
+```
+
+### Outputs
+
+`url` - uploaded artifact url
+
+## artifactory-publish/docker
+
+This action publishes docker image to artifactory docker storage.
+
+```
+steps:
+  - uses: allegro-actions/artifactory-publish/docker@v1
+    with:
+      host: company.artifactory.allegro
+      username: ${{ secrets.ARTIFACTORY_USERNAME }}
+      password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+      name: opbox-core
+      path: workshops/images
+      version: 1.0.0-SNAPSHOT
+```
+
+## artifactory-publish/npm
+
+This action publishes npm package to artifactory npm registry.
+
+```
+steps:
+  - uses: allegro-actions/artifactory-publish/npm@v1
+    with:
+      host: company.artifactory.allegro
+      username: ${{ secrets.ARTIFACTORY_USERNAME }}
+      password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+```
+
+## Use cases
+
+This action works great with [https://github.com/allegro-actions/next-version](allegro-actions/next-version).
+
+```yaml
+steps:
+    ...
+      - name: get next version
+      id: 'bump'
+      uses: allegro-actions/next-version@v1
+
+        - name: git tag
+          if: github.ref == 'refs/heads/master'
+          run: |
+            git tag ${{ steps.bump.outputs.version }}
+            git push origin HEAD --tags
+
+        - uses: allegro-actions/artifactory-publish/maven@v1
+          with:
+            host: company.artifactory.allegro
+            username: ${{ secrets.ARTIFACTORY_USERNAME }}
+            password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+            name: opbox-core
+            group: pl.allegro.opbox
+            version: ${{ steps.bump.outputs.version }}
+      ...
+  ```
+
+Access uploaded artifact
+
+```yaml
+  - name: 'upload file1'
+    id: upload1
+    uses: allegro-actions/artifactory-publish@v1
+    with:
+      host: company.artifactory.allegro
+      username: ${{ secrets.ARTIFACTORY_USERNAME }}
+      password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+      name: opbox-core
+      group: pl.allegro.opbox
+      buildDir: ./build-core
+      version: 1.0.0
+
+  - name: 'upload file2'
+    id: upload2
+    uses: allegro-actions/artifactory-publish@v1
+    with:
+      host: company.artifactory.allegro
+      username: ${{ secrets.ARTIFACTORY_USERNAME }}
+      password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+      name: opbox-web
+      group: pl.allegro.opbox
+      buildDir: ./build-web
+      version: 2.0.0
+
+  - run: 'echo $FILE1 $FILE2'
+    env:
+      FILE1: ${{ steps.upload1.outputs.url }}
+      FILE2: ${{ steps.upload2.outputs.url }}
+  ```
