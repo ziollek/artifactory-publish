@@ -4,8 +4,9 @@ const exec = util.promisify(require('child_process').exec);
 
 module.exports = {
   compressDirectory: async (source) => {
-    const target = `${source}.zip`;
-    const { error } = await exec(`zip --quiet --symlinks --recurse-paths "${target}" ${source} --exclude "${target}"`);
+    const target = `/tmp/bundledApp.zip`; //TODO: poprawna nazwa bundle'a
+
+    const { error } = await exec(`cd ${source} && zip --quiet --symlinks --recurse-paths "${target}" * --exclude "${target}"`);
     if (error) throw new Error(`zip command error: ${error}`);
     return fs.readFileSync(target);
   },
