@@ -1,5 +1,5 @@
-name: "artifactory publish"
-description: "Uploads artif"
+name: "artifactory dokcer publish"
+description: "Uploads artifact to dockerhub"
 
 outputs:
   url:
@@ -15,26 +15,15 @@ inputs:
   password:
     description: 'Artifactory password'
     required: true
+  path:
+    description: 'Artifact path'
+    required: true
   name:
     description: 'Artifact name'
-    required: true
-  group:
-    description: 'Artifact group'
-    required: true
-  buildDir:
-    description: 'Directory to make artifact from'
     required: true
   version:
     description: 'Artifact version'
     required: true
-  type:
-    description: 'Artifact type'
-    required: true
-    default: 'maven'
-  tycho:
-    description: 'Tycho file path'
-    required: true
-    default: './tycho.yaml'
 
 runs:
   using: 'node12'

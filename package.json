@@ -3,7 +3,10 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "build": "ncc build index.js -o dist --source-map --license licenses.txt",
+    "build": "npm run build-docker && npm run build-maven && npm run build-npm",
+    "build-docker": "ncc build docker/index.js -o docker/dist --source-map --license licenses.txt",
+    "build-maven": "ncc build maven/index.js -o maven/dist --source-map --license licenses.txt",
+    "build-npm": "ncc build npm/index.js -o npm/dist --source-map --license licenses.txt",
     "test": "jest"
   },
   "repository": {
@@ -13,7 +16,7 @@
   "dependencies": {
     "@actions/core": "^1.4.0",
     "node-fetch": "^2.6.1",
-    "zip-a-folder": "^1.1.0"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.28.6",
