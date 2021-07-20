@@ -1,4 +1,6 @@
+const fsPromises = require('fs').promises;
 const fs = require('fs');
+const path = require('path');
 const fetch = require('node-fetch');
 const core = require('@actions/core');
 const { compressDirectory, compressFiles } = require('./compress');
@@ -12,6 +14,7 @@ const group = core.getInput('group');
 const buildDir = core.getInput('buildDir');
 const version = core.getInput('version');
 const tychoPath = core.getInput('tycho');
+const distributionsDir = core.getInput('distributionsDir');
 
 const currentBranch = process.env['GITHUB_HEAD_REF'] || process.env['GITHUB_REF'].split('/').pop();
 
@@ -19,9 +22,24 @@ core.info(`current branch: ${currentBranch}`);
 const isSnapshot = !['master', 'main'].includes(currentBranch);
 if (isSnapshot) core.info('this is a snapshot release');
 
-const target = deployArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot);
-compressDirectory(buildDir)
-  .then(data => fetch(target.toString(), { method: 'PUT', body: data }).then(response => response.status))
+if(buildDir){
+  publishBuildDir();
+}else {
+  publishDistributions();
+}
+
+function publishDistributions() {
+  const target = deployArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot);
+  fsPromises.readdir(distributionsDir, {withFileTypes:true})
+  .then(files => files
+  .filter(file => !file.isDirectory())
+  .filter(file => file.name.endsWith('.zip'))
+  )
+  .then(data => {
+    data.map(file => path.join(distributionsDir, file.name))
+    .map(zipFile => fetch(target.toString(), {method: 'PUT', body: fs.readFileSync(zipFile)
+    }).then(response => response.status));
+  })
   .then((status) => {
     core.info(`[deploy package] artifactory response: ${status}`);
     checkStatus(status);
@@ -34,6 +52,25 @@ compressDirectory(buildDir)
     core.setOutput('url', url);
   })
   .catch(reason => core.setFailed(reason));
+}
+
+function publishBuildDir() {
+  const target = deployArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot);
+  compressDirectory(buildDir)
+  .then(data => fetch(target.toString(), {method: 'PUT', body: data}).then(response => response.status))
+  .then((status) => {
+    core.info(`[deploy package] artifactory response: ${status}`);
+    checkStatus(status);
+  })
+  .then(() => {
+    const url = deployArtifactUrl('', '', host, group, name, version, currentBranch, isSnapshot);
+    url.username = null;
+    url.password = null;
+    core.info(`${url} uploaded.`);
+    core.setOutput('url', url);
+  })
+  .catch(reason => core.setFailed(reason));
+}
 
 if (fs.existsSync(tychoPath)) {
   fs.writeFileSync('dependencies.yml', 'datasources:\nservices:\n');

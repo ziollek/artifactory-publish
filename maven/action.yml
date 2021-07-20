@@ -26,7 +26,11 @@ inputs:
     required: true
   buildDir:
     description: 'Directory to make artifact from'
-    required: true
+    required: false
+  distributionsDir:
+    description: 'Directory to distributions zip'
+    required: false
+    default: './build/distributions'
   tycho:
     description: 'Tycho file path'
     required: true
