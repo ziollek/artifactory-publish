@@ -59,6 +59,22 @@ steps:
       version: 1.0.0-SNAPSHOT
 ```
 
+Optionally, you can also specify `context` and `dockerfile`:
+
+```
+steps:
+  - uses: allegro-actions/artifactory-publish/docker@v1
+    with:
+      host: company.artifactory.allegro
+      username: ${{ secrets.ARTIFACTORY_USERNAME }}
+      password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+      name: opbox-core
+      path: workshops/images
+      version: 1.0.0-SNAPSHOT
+      context: src
+      dockerfile: docker/Dockerfile
+```
+
 ## artifactory-publish/npm
 
 This action publishes npm package to artifactory npm registry.
@@ -98,7 +114,7 @@ steps:
             group: pl.allegro.opbox
             version: ${{ steps.bump.outputs.version }}
       ...
-  ```
+```
 
 Access uploaded artifact
 
@@ -131,4 +147,4 @@ Access uploaded artifact
     env:
       FILE1: ${{ steps.upload1.outputs.url }}
       FILE2: ${{ steps.upload2.outputs.url }}
-  ```
+```

@@ -24,6 +24,12 @@ inputs:
   version:
     description: 'Artifact version'
     required: true
+  dockerfile:
+    description: 'Path of the Dockerfile'
+    required: false
+  context:
+    description: 'Docker build context'
+    required: false
 
 runs:
   using: 'node12'

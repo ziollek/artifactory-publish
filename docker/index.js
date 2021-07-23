@@ -8,6 +8,8 @@ const password = core.getInput('password');
 const name = core.getInput('name');
 const path = core.getInput('path');
 const version = core.getInput('version');
+const dockerfile = core.getInput('dockerfile') || 'Dockerfile';
+const context = core.getInput('context') || '.';
 
 const temp = uuid.v4();
 const imageTag = `${host}/${path}/${name}`;
@@ -15,7 +17,7 @@ const imageTag = `${host}/${path}/${name}`;
 try {
   exec(`docker login -u ${username} -p ${password} ${host}`);
   core.info(`logged into ${host}`);
-  exec(`docker build -t ${imageTag}:${temp} .`);
+  exec(`docker build -f ${dockerfile} -t ${imageTag}:${temp} ${context}`);
   core.info('docker build successfully');
   exec(`docker tag ${imageTag}:${temp} ${imageTag}:${version}`);
   core.info(`docker tag created ${imageTag}:${temp} ${imageTag}:${version}`);
