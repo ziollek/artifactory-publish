@@ -95,24 +95,24 @@ This action works great with [https://github.com/allegro-actions/next-version](a
 ```yaml
 steps:
     ...
-    - name: get next version
-      id: 'bump'
-      uses: allegro-actions/next-version@v1
-    - name: Push new tag on master
-      if: github.ref == 'refs/heads/master'
-      uses: allegro-actions/create-tag@v1
-      with:
-        tag: ${{ steps.bump.outputs.next_tag }}
-        current-tag: ${{ steps.bump.outputs.current_tag }}
+- name: get next version
+  id: 'bump'
+  uses: allegro-actions/next-version@v1
+- name: Push new tag on master
+  if: github.ref == 'refs/heads/master'
+  uses: allegro-actions/create-tag@v1
+  with:
+    tag: ${{ steps.bump.outputs.next_tag }}
+    current-tag: ${{ steps.bump.outputs.current_tag }}
 
-    - uses: allegro-actions/artifactory-publish/maven@v1
-      with:
-        host: company.artifactory.allegro
-        username: ${{ secrets.ARTIFACTORY_USERNAME }}
-        password: ${{ secrets.ARTIFACTORY_PASSWORD }}
-        name: opbox-core
-        group: pl.allegro.opbox
-        version: ${{ steps.bump.outputs.version }}
+- uses: allegro-actions/artifactory-publish/maven@v1
+  with:
+    host: company.artifactory.allegro
+    username: ${{ secrets.ARTIFACTORY_USERNAME }}
+    password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+    name: opbox-core
+    group: pl.allegro.opbox
+    version: ${{ steps.bump.outputs.version }}
       ...
 ```
 
