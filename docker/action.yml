@@ -30,6 +30,10 @@ inputs:
   context:
     description: 'Docker build context'
     required: false
+  tycho:
+    description: 'Tycho file path'
+    required: true
+    default: './tycho.yaml'
 
 runs:
   using: 'node12'
