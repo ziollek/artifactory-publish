@@ -16,7 +16,7 @@ function artifactUrl(username, password, host, group, name, version, currentBran
   const targetFileName = `${name}-${targetVersion}${fileNameSuffix}`;
   return new URL(
     `/artifactory/allegro-${isSnapshot ? 'snapshots' : 'releases'}-local/${targetPath}/${name}/${targetVersion}/${targetFileName}`,
-    `https://${username}:${password}@${host}`
+    `https://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${host}`
   );
 }
 
