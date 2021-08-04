@@ -121,7 +121,7 @@ Access uploaded artifact
 ```yaml
   - name: 'upload file1'
     id: upload1
-    uses: allegro-actions/artifactory-publish@v1
+    uses: allegro-actions/artifactory-publish/maven@v1
     with:
       host: company.artifactory.allegro
       username: ${{ secrets.ARTIFACTORY_USERNAME }}
@@ -133,7 +133,7 @@ Access uploaded artifact
 
   - name: 'upload file2'
     id: upload2
-    uses: allegro-actions/artifactory-publish@v1
+    uses: allegro-actions/artifactory-publish/maven@v1
     with:
       host: company.artifactory.allegro
       username: ${{ secrets.ARTIFACTORY_USERNAME }}
