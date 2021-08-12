@@ -1,7 +1,7 @@
 [![CI](https://github.com/allegro-actions/artifactory-publish/actions/workflows/ci.yml/badge.svg)](https://github.com/allegro-actions/artifactory-publish/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/allegro-actions/artifactory-publish/branch/main/graph/badge.svg?token=YNK3XCBRY4)](https://codecov.io/gh/allegro-actions/artifactory-publish)
 
-# allegro-actions/artifactory-publish (BETA)
+# allegro-actions/artifactory-publish
 
 Action created for easy artifactory publications.
 
