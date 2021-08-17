@@ -90,7 +90,7 @@ steps:
 
 ## Use cases
 
-This action works great with [https://github.com/allegro-actions/next-version](allegro-actions/next-version).
+This action works great with [allegro-actions/next-version](https://github.com/allegro-actions/next-version).
 
 ```yaml
 steps:
