@@ -30,13 +30,18 @@ if (buildDir) {
 const target = deployArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot);
 
 function publishDistributions() {
-  fs.promises.readdir(distributionsDir, { withFileTypes: true })
-    .then(files => files.filter(file => !file.isDirectory()).filter(file => file.name.endsWith('.zip')))
-    .then(data => {
-      data.map(file => path.join(distributionsDir, file.name))
-        .map(zipFile => fetch(target.toString(), {
-          method: 'PUT', body: fs.readFileSync(zipFile)
-        }).then(response => response.status));
+  fs.promises
+    .readdir(distributionsDir, { withFileTypes: true })
+    .then((files) => files.filter((file) => !file.isDirectory()).filter((file) => file.name.endsWith('.zip')))
+    .then((data) => {
+      data
+        .map((file) => path.join(distributionsDir, file.name))
+        .map((zipFile) =>
+          fetch(target.toString(), {
+            method: 'PUT',
+            body: fs.readFileSync(zipFile),
+          }).then((response) => response.status)
+        );
     })
     .then((status) => {
       core.info(`[deploy package] artifactory response: ${status}`);
@@ -51,12 +56,12 @@ function publishDistributions() {
       core.info(`${url} uploaded.`);
       core.setOutput('url', url);
     })
-    .catch(reason => core.setFailed(reason));
+    .catch((reason) => core.setFailed(reason));
 }
 
 function publishBuildDir() {
   compressDirectory(buildDir)
-    .then(data => fetch(target.toString(), { method: 'PUT', body: data }).then(response => response.status))
+    .then((data) => fetch(target.toString(), { method: 'PUT', body: data }).then((response) => response.status))
     .then((status) => {
       core.info(`[deploy package] artifactory response: ${status}`);
       if (status >= 300) {
@@ -70,7 +75,7 @@ function publishBuildDir() {
       core.info(`${url} uploaded.`);
       core.setOutput('url', url);
     })
-    .catch(reason => core.setFailed(reason));
+    .catch((reason) => core.setFailed(reason));
 }
 
 if (fs.existsSync(tychoPath)) {
@@ -79,7 +84,7 @@ if (fs.existsSync(tychoPath)) {
   fs.writeFileSync('deployment.yml', fs.readFileSync(tychoPath, 'utf8'));
   const target = provisioningArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot);
   compressFiles(['deployment.yml', 'environment-variables.yml', 'dependencies.yml'])
-    .then(data => fetch(target.toString(), { method: 'PUT', body: data }).then(response => response.status))
+    .then((data) => fetch(target.toString(), { method: 'PUT', body: data }).then((response) => response.status))
     .then((status) => {
       core.info(`[provisioning package] artifactory response: ${status}`);
       if (status >= 300) {
@@ -92,5 +97,5 @@ if (fs.existsSync(tychoPath)) {
       core.info(`${target} uploaded.`);
       core.setOutput('url', target);
     })
-    .catch(reason => core.setFailed(reason));
+    .catch((reason) => core.setFailed(reason));
 }

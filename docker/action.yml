@@ -30,6 +30,9 @@ inputs:
   context:
     description: 'Docker build context'
     required: false
+  skipMaven:
+    description: 'Skip maven publish'
+    required: false
   tycho:
     description: 'Tycho file path'
     required: true
