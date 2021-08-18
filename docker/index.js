@@ -1,10 +1,7 @@
 const { execSync: exec } = require('child_process');
 const core = require('@actions/core');
 const uuid = require('uuid');
-const fs = require('fs');
-const { provisioningArtifactUrl } = require('../utils/artifactory');
-const { compressFiles } = require('../utils/compress');
-const fetch = require('node-fetch');
+const { publishProvisioning } = require('../utils/provisioning');
 
 const host = core.getInput('host');
 const username = core.getInput('username');
@@ -37,25 +34,4 @@ try {
   core.setFailed(e);
 }
 
-if (fs.existsSync(tychoPath)) {
-  fs.writeFileSync('dependencies.yml', 'datasources:\nservices:\n');
-  fs.writeFileSync('environment-variables.yml', 'envs:\n');
-  fs.writeFileSync('deployment.yml', fs.readFileSync(tychoPath, 'utf8'));
-
-  const target = provisioningArtifactUrl(username, password, host, path, name, version, currentBranch, isSnapshot);
-  compressFiles(['deployment.yml', 'environment-variables.yml', 'dependencies.yml'])
-    .then(data => fetch(target.toString(), { method: 'PUT', body: data }).then(response => response.status))
-    .then((status) => {
-      core.info(`[provisioning package] artifactory response: ${status}`);
-      if (status >= 300) {
-        throw new Error('provisioning package upload failed');
-      }
-    })
-    .then(() => {
-      target.username = null;
-      target.password = null;
-      core.info(`${target} uploaded.`);
-      core.setOutput('url', target.toString());
-    })
-    .catch(reason => core.setFailed(reason));
-}
+publishProvisioning(username, password, host, path, name, version, currentBranch, isSnapshot, tychoPath);
