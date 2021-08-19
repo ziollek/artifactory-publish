@@ -7,18 +7,19 @@ const { compressDirectory } = require('./compress');
 const { provisioningArtifactUrl } = require('./artifactory');
 
 module.exports = {
-  publishProvisioning: (username, password, host, group, name, version, currentBranch, isSnapshot, tychoPath) => {
-    const provisioningDir = 'provisioning';
-    if (!fs.existsSync(provisioningDir)) {
-      fs.mkdirSync(provisioningDir);
-      fs.writeFileSync(path.join(provisioningDir, 'dependencies.yml'), 'datasources:\nservices:\n');
-      fs.writeFileSync(path.join(provisioningDir, 'environment-variables.yml'), 'envs:\n');
-    }
-    if (fs.existsSync(tychoPath)) {
-      fs.writeFileSync(path.join(provisioningDir, 'deployment.yml'), fs.readFileSync(tychoPath, 'utf8'));
+  publishProvisioning: (username, password, host, group, name, version, currentBranch, isSnapshot, tychoPath, provisioningPath) => {
+    if (!fs.existsSync(provisioningPath)) {
+      fs.mkdirSync(provisioningPath);
+      fs.writeFileSync(path.join(provisioningPath, 'dependencies.yml'), 'datasources:\nservices:\n');
+      fs.writeFileSync(path.join(provisioningPath, 'environment-variables.yml'), 'envs:\n');
+      fs.writeFileSync(path.join(provisioningPath, 'deployment.yml'), fs.readFileSync(tychoPath, 'utf8'));
+    } else {
+      if (!fs.existsSync(path.join(provisioningPath, 'deployment.yml'))) {
+        fs.writeFileSync(path.join(provisioningPath, 'deployment.yml'), fs.readFileSync(tychoPath, 'utf8'));
+      }
     }
     const provisioningTargetUrl = provisioningArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot).toString();
-    compressDirectory(provisioningDir)
+    compressDirectory(provisioningPath)
       .then(data => fetch(provisioningTargetUrl.toString(), { method: 'PUT', body: data }).then(response => response.status))
       .then((status) => {
         core.info(`[provisioning package] artifactory response: ${status}`);
@@ -27,10 +28,9 @@ module.exports = {
         }
       })
       .then(() => {
-        provisioningTargetUrl.username = null;
-        provisioningTargetUrl.password = null;
-        core.info(`${provisioningTargetUrl} uploaded.`);
-        core.setOutput('url', provisioningTargetUrl);
+        const url = provisioningArtifactUrl(null, null, host, group, name, version, currentBranch, isSnapshot);
+        core.info(`${url} uploaded.`);
+        core.setOutput('url', url);
       })
       .catch(reason => core.setFailed(reason));
   }

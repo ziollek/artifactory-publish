@@ -12,6 +12,7 @@ const version = core.getInput('version');
 const dockerfile = core.getInput('dockerfile') || 'Dockerfile';
 const context = core.getInput('context') || '.';
 const tychoPath = core.getInput('tycho');
+const provisioningPath = core.getInput('provisioning');
 
 const temp = uuid.v4();
 const imageTag = `${host}/${path}/${name}`;
@@ -34,4 +35,4 @@ try {
   core.setFailed(e);
 }
 
-publishProvisioning(username, password, host, path, name, version, currentBranch, isSnapshot, tychoPath);
+publishProvisioning(username, password, host, path, name, version, currentBranch, isSnapshot, tychoPath, provisioningPath);

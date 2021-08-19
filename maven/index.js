@@ -15,6 +15,7 @@ const group = core.getInput('group');
 const buildDir = core.getInput('buildDir');
 const version = core.getInput('version');
 const tychoPath = core.getInput('tycho');
+const provisioningPath = core.getInput('provisioning');
 const distributionsDir = core.getInput('distributionsDir');
 const currentBranch = process.env['GITHUB_HEAD_REF'] || process.env['GITHUB_REF'].split('/').pop();
 
@@ -30,7 +31,7 @@ if (buildDir) {
   publishDistributions();
 }
 
-publishProvisioning(username, password, host, group, name, version, currentBranch, isSnapshot, tychoPath);
+publishProvisioning(username, password, host, group, name, version, currentBranch, isSnapshot, tychoPath, provisioningPath);
 
 const target = deployArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot);
 
