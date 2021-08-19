@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
 const core = require('@actions/core');
+const { reportAction } = require('@gh-stats/reporter');
 const { compressDirectory } = require('../utils/compress');
 const { deployArtifactUrl } = require('../utils/artifactory');
 const { publishProvisioning } = require('../utils/provisioning');
@@ -17,6 +18,8 @@ const tychoPath = core.getInput('tycho');
 const distributionsDir = core.getInput('distributionsDir');
 const currentBranch = process.env['GITHUB_HEAD_REF'] || process.env['GITHUB_REF'].split('/').pop();
 
+reportAction();
+
 core.info(`current branch: ${currentBranch}`);
 const isSnapshot = !['master', 'main'].includes(currentBranch);
 if (isSnapshot) core.info('this is a snapshot release');
@@ -26,6 +29,7 @@ if (buildDir) {
 } else {
   publishDistributions();
 }
+
 publishProvisioning(username, password, host, group, name, version, currentBranch, isSnapshot, tychoPath);
 
 const target = deployArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot);
@@ -42,13 +46,11 @@ function publishDistributions() {
     .then((status) => {
       core.info(`[deploy package] artifactory response: ${status}`);
       if (status >= 300) {
-        throw new Error('provisioning package upload failed');
+        throw new Error('main package upload failed');
       }
     })
     .then(() => {
-      const url = deployArtifactUrl('', '', host, group, name, version, currentBranch, isSnapshot);
-      url.username = null;
-      url.password = null;
+      const url = deployArtifactUrl(null, null, host, group, name, version, currentBranch, isSnapshot);
       core.info(`${url} uploaded.`);
       core.setOutput('url', url);
     })
@@ -61,13 +63,11 @@ function publishBuildDir() {
     .then((status) => {
       core.info(`[deploy package] artifactory response: ${status}`);
       if (status >= 300) {
-        throw new Error('provisioning package upload failed');
+        throw new Error('main package upload failed');
       }
     })
     .then(() => {
-      const url = deployArtifactUrl('', '', host, group, name, version, currentBranch, isSnapshot);
-      url.username = null;
-      url.password = null;
+      const url = deployArtifactUrl(null, null, host, group, name, version, currentBranch, isSnapshot);
       core.info(`${url} uploaded.`);
       core.setOutput('url', url);
     })
