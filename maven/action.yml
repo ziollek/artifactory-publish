@@ -35,6 +35,10 @@ inputs:
     description: 'Tycho file path'
     required: true
     default: './tycho.yaml'
+  provisioning:
+    description: 'Provisioning directory path'
+    required: true
+    default: './provisioning'
 
 runs:
   using: 'node12'

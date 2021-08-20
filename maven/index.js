@@ -2,8 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
 const core = require('@actions/core');
-const { compressDirectory, compressFiles } = require('../utils/compress');
-const { deployArtifactUrl, provisioningArtifactUrl } = require('../utils/artifactory');
+const { reportAction } = require('@gh-stats/reporter');
+const { compressDirectory } = require('../utils/compress');
+const { deployArtifactUrl } = require('../utils/artifactory');
+const { publishProvisioning } = require('../utils/provisioning');
 
 const host = core.getInput('host');
 const username = core.getInput('username');
@@ -13,9 +15,11 @@ const group = core.getInput('group');
 const buildDir = core.getInput('buildDir');
 const version = core.getInput('version');
 const tychoPath = core.getInput('tycho');
+const provisioningPath = core.getInput('provisioning');
 const distributionsDir = core.getInput('distributionsDir');
-
 const currentBranch = process.env['GITHUB_HEAD_REF'] || process.env['GITHUB_REF'].split('/').pop();
+
+reportAction();
 
 core.info(`current branch: ${currentBranch}`);
 const isSnapshot = !['master', 'main'].includes(currentBranch);
@@ -26,6 +30,8 @@ if (buildDir) {
 } else {
   publishDistributions();
 }
+
+publishProvisioning(username, password, host, group, name, version, currentBranch, isSnapshot, tychoPath, provisioningPath);
 
 const target = deployArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot);
 
@@ -41,13 +47,11 @@ function publishDistributions() {
     .then((status) => {
       core.info(`[deploy package] artifactory response: ${status}`);
       if (status >= 300) {
-        throw new Error('provisioning package upload failed');
+        throw new Error('main package upload failed');
       }
     })
     .then(() => {
-      const url = deployArtifactUrl('', '', host, group, name, version, currentBranch, isSnapshot);
-      url.username = null;
-      url.password = null;
+      const url = deployArtifactUrl(null, null, host, group, name, version, currentBranch, isSnapshot);
       core.info(`${url} uploaded.`);
       core.setOutput('url', url);
     })
@@ -60,37 +64,13 @@ function publishBuildDir() {
     .then((status) => {
       core.info(`[deploy package] artifactory response: ${status}`);
       if (status >= 300) {
-        throw new Error('provisioning package upload failed');
+        throw new Error('main package upload failed');
       }
     })
     .then(() => {
-      const url = deployArtifactUrl('', '', host, group, name, version, currentBranch, isSnapshot);
-      url.username = null;
-      url.password = null;
+      const url = deployArtifactUrl(null, null, host, group, name, version, currentBranch, isSnapshot);
       core.info(`${url} uploaded.`);
       core.setOutput('url', url);
-    })
-    .catch(reason => core.setFailed(reason));
-}
-
-if (fs.existsSync(tychoPath)) {
-  fs.writeFileSync('dependencies.yml', 'datasources:\nservices:\n');
-  fs.writeFileSync('environment-variables.yml', 'envs:\n');
-  fs.writeFileSync('deployment.yml', fs.readFileSync(tychoPath, 'utf8'));
-  const target = provisioningArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot);
-  compressFiles(['deployment.yml', 'environment-variables.yml', 'dependencies.yml'])
-    .then(data => fetch(target.toString(), { method: 'PUT', body: data }).then(response => response.status))
-    .then((status) => {
-      core.info(`[provisioning package] artifactory response: ${status}`);
-      if (status >= 300) {
-        throw new Error('provisioning package upload failed');
-      }
-    })
-    .then(() => {
-      target.username = null;
-      target.password = null;
-      core.info(`${target} uploaded.`);
-      core.setOutput('url', target);
     })
     .catch(reason => core.setFailed(reason));
 }

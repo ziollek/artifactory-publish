@@ -10,14 +10,24 @@ module.exports = {
 
 function artifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot, fileNameSuffix = '.zip') {
   const snapshotSuffix = isSnapshot ? '-SNAPSHOT' : '';
-  const brachSuffix = isSnapshot ? `-${slugify(currentBranch)}` : '';
+  const snapshotFilenameSuffix = isSnapshot ? `-${getTimestamp()}` : '';
+  const branchSuffix = isSnapshot ? `-${slugify(currentBranch)}` : '';
   const targetPath = group.replace(/\./g, '/');
-  const targetVersion = `${version}${brachSuffix}${snapshotSuffix}`;
-  const targetFileName = `${name}-${targetVersion}${fileNameSuffix}`;
+  const targetVersion = `${version}${branchSuffix}`;
+  const targetFileName = `${name}-${targetVersion}${snapshotFilenameSuffix}${fileNameSuffix}`;
+  const credentials = username && password ? `${encodeURIComponent(username)}:${encodeURIComponent(password)}@` : '';
   return new URL(
-    `/artifactory/allegro-${isSnapshot ? 'snapshots' : 'releases'}-local/${targetPath}/${name}/${targetVersion}/${targetFileName}`,
-    `https://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${host}`
+    `/artifactory/allegro-${isSnapshot ? 'snapshots' : 'releases'}-local/${targetPath}/${name}/${targetVersion}${snapshotSuffix}/${targetFileName}`,
+    `https://${credentials}${host}`
   );
+}
+
+function getTimestamp() {
+  return new Date().toISOString()
+    .replace(/\..+/, '')
+    .replace('T', '.')
+    .replace(/:/g, '')
+    .replace(/-/g, '') + '-1';
 }
 
 function slugify(input) {
