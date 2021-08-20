@@ -27,7 +27,7 @@ function getTimestamp() {
     .replace(/\..+/, '')
     .replace('T', '.')
     .replace(/:/g, '')
-    .replace(/-/g, '');
+    .replace(/-/g, '') + '-1';
 }
 
 function slugify(input) {

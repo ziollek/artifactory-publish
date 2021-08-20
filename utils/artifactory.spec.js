@@ -20,8 +20,8 @@ describe('artifactory', () => {
       version: '1.0.0',
       branch: 'my-branch',
       snapshot: true,
-      deployUrl: 'https://bgalek:password@company.artifactory/artifactory/allegro-snapshots-local/pl/allegro/opbox/opbox-web/1.0.0-my-branch-SNAPSHOT/opbox-web-1.0.0-my-branch-20210819.112606-deploy.zip',
-      provisioningUrl: 'https://bgalek:password!%40%23@company.artifactory/artifactory/allegro-snapshots-local/pl/allegro/opbox/opbox-web/1.0.0-my-branch-SNAPSHOT/opbox-web-1.0.0-my-branch-20210819.112606-provisioning.zip'
+      deployUrl: 'https://bgalek:password@company.artifactory/artifactory/allegro-snapshots-local/pl/allegro/opbox/opbox-web/1.0.0-my-branch-SNAPSHOT/opbox-web-1.0.0-my-branch-20210819.112606-1-deploy.zip',
+      provisioningUrl: 'https://bgalek:password!%40%23@company.artifactory/artifactory/allegro-snapshots-local/pl/allegro/opbox/opbox-web/1.0.0-my-branch-SNAPSHOT/opbox-web-1.0.0-my-branch-20210819.112606-1-provisioning.zip'
     },
     {
       name: 'listing-mobile-bff',
@@ -36,16 +36,16 @@ describe('artifactory', () => {
       version: '1.0.0',
       branch: 'feature/my-branch',
       snapshot: true,
-      deployUrl: 'https://bgalek:password@company.artifactory/artifactory/allegro-snapshots-local/pl/allegro/opbox/listing-mobile-bff/1.0.0-feature-my-branch-SNAPSHOT/listing-mobile-bff-1.0.0-feature-my-branch-20210819.112606-deploy.zip',
-      provisioningUrl: 'https://bgalek:password!%40%23@company.artifactory/artifactory/allegro-snapshots-local/pl/allegro/opbox/listing-mobile-bff/1.0.0-feature-my-branch-SNAPSHOT/listing-mobile-bff-1.0.0-feature-my-branch-20210819.112606-provisioning.zip'
+      deployUrl: 'https://bgalek:password@company.artifactory/artifactory/allegro-snapshots-local/pl/allegro/opbox/listing-mobile-bff/1.0.0-feature-my-branch-SNAPSHOT/listing-mobile-bff-1.0.0-feature-my-branch-20210819.112606-1-deploy.zip',
+      provisioningUrl: 'https://bgalek:password!%40%23@company.artifactory/artifactory/allegro-snapshots-local/pl/allegro/opbox/listing-mobile-bff/1.0.0-feature-my-branch-SNAPSHOT/listing-mobile-bff-1.0.0-feature-my-branch-20210819.112606-1-provisioning.zip'
     },
     {
       name: 'opbpox-core',
       version: '1',
       branch: 'feature/my-branch',
       snapshot: true,
-      deployUrl: 'https://bgalek:password@company.artifactory/artifactory/allegro-snapshots-local/pl/allegro/opbox/opbpox-core/1-feature-my-branch-SNAPSHOT/opbpox-core-1-feature-my-branch-20210819.112606-deploy.zip',
-      provisioningUrl: 'https://bgalek:password!%40%23@company.artifactory/artifactory/allegro-snapshots-local/pl/allegro/opbox/opbpox-core/1-feature-my-branch-SNAPSHOT/opbpox-core-1-feature-my-branch-20210819.112606-provisioning.zip'
+      deployUrl: 'https://bgalek:password@company.artifactory/artifactory/allegro-snapshots-local/pl/allegro/opbox/opbpox-core/1-feature-my-branch-SNAPSHOT/opbpox-core-1-feature-my-branch-20210819.112606-1-deploy.zip',
+      provisioningUrl: 'https://bgalek:password!%40%23@company.artifactory/artifactory/allegro-snapshots-local/pl/allegro/opbox/opbpox-core/1-feature-my-branch-SNAPSHOT/opbpox-core-1-feature-my-branch-20210819.112606-1-provisioning.zip'
     },
     {
       name: 'opbpox-core',
