@@ -38,6 +38,9 @@ inputs:
     description: 'Provisioning directory path'
     required: true
     default: './provisioning'
+  skipProvisioning:
+    description: 'Skip provisioning publish'
+    required: false
 
 runs:
   using: 'node12'

@@ -1,7 +1,7 @@
 const { execSync: exec } = require('child_process');
 const core = require('@actions/core');
-const uuid = require('uuid');
 const { publishProvisioning } = require('../utils/provisioning');
+const { provisioningArtifactUrl } = require('../utils/artifactory');
 
 const host = core.getInput('host');
 const username = core.getInput('username');
@@ -13,8 +13,8 @@ const dockerfile = core.getInput('dockerfile') || 'Dockerfile';
 const context = core.getInput('context') || '.';
 const tychoPath = core.getInput('tycho');
 const provisioningPath = core.getInput('provisioning');
+const skipProvisioning = core.getInput('skipProvisioning');
 
-const temp = uuid.v4();
 const imageTag = `${host}/${path}/${name}`;
 
 const currentBranch = process.env['GITHUB_HEAD_REF'] || process.env['GITHUB_REF'].split('/').pop();
@@ -25,14 +25,16 @@ if (isSnapshot) core.info('this is a snapshot release');
 try {
   exec(`docker login -u ${username} -p ${password} ${host}`);
   core.info(`logged into ${host}`);
-  exec(`docker build -f ${dockerfile} -t ${imageTag}:${temp} ${context}`);
+  exec(`docker build -f ${dockerfile} -t ${imageTag}:${version} ${context}`);
   core.info('docker build successfully');
-  exec(`docker tag ${imageTag}:${temp} ${imageTag}:${version}`);
-  core.info(`docker tag created ${imageTag}:${temp} ${imageTag}:${version}`);
   exec(`docker push ${imageTag}:${version}`);
-  core.info(`docker push finished ${imageTag}:${temp} ${imageTag}:${version}`);
+  core.info(`docker push finished ${imageTag}:${version}`);
 } catch (e) {
   core.setFailed(e);
 }
 
-publishProvisioning(username, password, host, path, name, version, currentBranch, isSnapshot, tychoPath, provisioningPath);
+if (!skipProvisioning) {
+  publishProvisioning(tychoPath, provisioningPath, provisioningArtifactUrl(username, password, host, path, name, version, currentBranch, isSnapshot))
+    .then(provisioningTargetUrl => core.setOutput('url', provisioningTargetUrl))
+    .catch((e) => core.setFailed(e));
+}

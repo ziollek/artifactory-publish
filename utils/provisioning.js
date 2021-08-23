@@ -2,12 +2,18 @@ const fs = require('fs');
 const path = require('path');
 const core = require('@actions/core');
 const fetch = require('node-fetch');
-
 const { compressDirectory } = require('./compress');
-const { provisioningArtifactUrl } = require('./artifactory');
 
 module.exports = {
-  publishProvisioning: (username, password, host, group, name, version, currentBranch, isSnapshot, tychoPath, provisioningPath) => {
+  /**
+   * Upload provisioning artifact
+   *
+   * @param {String} tychoPath
+   * @param {String} provisioningPath
+   * @param {URL} provisioningTargetUrl
+   * @return {Promise<URL>}
+   */
+  publishProvisioning: (tychoPath, provisioningPath, provisioningTargetUrl) => {
     if (!fs.existsSync(provisioningPath)) {
       fs.mkdirSync(provisioningPath);
       fs.writeFileSync(path.join(provisioningPath, 'dependencies.yml'), 'datasources:\nservices:\n');
@@ -18,9 +24,9 @@ module.exports = {
         fs.writeFileSync(path.join(provisioningPath, 'deployment.yml'), fs.readFileSync(tychoPath, 'utf8'));
       }
     }
-    const provisioningTargetUrl = provisioningArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot).toString();
-    compressDirectory(provisioningPath)
-      .then(data => fetch(provisioningTargetUrl.toString(), { method: 'PUT', body: data }).then(response => response.status))
+    return compressDirectory(provisioningPath)
+      .then(data => fetch(provisioningTargetUrl.toString(), { method: 'PUT', body: data }))
+      .then(response => response.status)
       .then((status) => {
         core.info(`[provisioning package] artifactory response: ${status}`);
         if (status >= 300) {
@@ -28,10 +34,10 @@ module.exports = {
         }
       })
       .then(() => {
-        const url = provisioningArtifactUrl(null, null, host, group, name, version, currentBranch, isSnapshot);
-        core.info(`${url} uploaded.`);
-        core.setOutput('url', url);
-      })
-      .catch(reason => core.setFailed(reason));
+        provisioningTargetUrl.username = null;
+        provisioningTargetUrl.password = null;
+        core.info(`${provisioningTargetUrl} uploaded.`);
+        return provisioningTargetUrl;
+      });
   }
 };
