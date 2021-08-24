@@ -1,7 +1,7 @@
 const { execSync: exec } = require('child_process');
 const core = require('@actions/core');
 const { publishProvisioning } = require('../utils/provisioning');
-const { provisioningArtifactUrl } = require('../utils/artifactory');
+const { provisioningArtifactUrl, artifactVersion } = require('../utils/artifactory');
 
 const host = core.getInput('host');
 const username = core.getInput('username');
@@ -23,6 +23,7 @@ const isSnapshot = !['master', 'main'].includes(currentBranch);
 if (isSnapshot) core.info('this is a snapshot release');
 
 try {
+  const version = artifactVersion(version, currentBranch, isSnapshot);
   exec(`docker login -u ${username} -p ${password} ${host}`);
   core.info(`logged into ${host}`);
   exec(`docker build -f ${dockerfile} -t ${imageTag}:${version} ${context}`);
@@ -34,7 +35,7 @@ try {
 }
 
 if (!skipProvisioning) {
-  publishProvisioning(tychoPath, provisioningPath, provisioningArtifactUrl(username, password, host, path, name, version, currentBranch, isSnapshot))
+  publishProvisioning(tychoPath, provisioningPath, provisioningArtifactUrl(username, password, host, path, name, version, currentBranch, isSnapshot, ''))
     .then(provisioningTargetUrl => core.setOutput('url', provisioningTargetUrl))
     .catch((e) => core.setFailed(e));
 }
