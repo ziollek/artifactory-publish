@@ -23,13 +23,13 @@ const isSnapshot = !['master', 'main'].includes(currentBranch);
 if (isSnapshot) core.info('this is a snapshot release');
 
 try {
-  const version = artifactVersion(version, currentBranch, isSnapshot);
+  const targetVersion = artifactVersion(version, currentBranch, isSnapshot);
   exec(`docker login -u ${username} -p ${password} ${host}`);
   core.info(`logged into ${host}`);
-  exec(`docker build -f ${dockerfile} -t ${imageTag}:${version} ${context}`);
+  exec(`docker build -f ${dockerfile} -t ${imageTag}:${targetVersion} ${context}`);
   core.info('docker build successfully');
-  exec(`docker push ${imageTag}:${version}`);
-  core.info(`docker push finished ${imageTag}:${version}`);
+  exec(`docker push ${imageTag}:${targetVersion}`);
+  core.info(`docker push finished ${imageTag}:${targetVersion}`);
 } catch (e) {
   core.setFailed(e);
 }
