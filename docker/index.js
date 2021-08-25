@@ -22,8 +22,10 @@ core.info(`current branch: ${currentBranch}`);
 const isSnapshot = !['master', 'main'].includes(currentBranch);
 if (isSnapshot) core.info('this is a snapshot release');
 
+const timestamp = Date.now();
+
 try {
-  const targetVersion = artifactVersion(version, currentBranch, isSnapshot);
+  const targetVersion = `${artifactVersion(version, currentBranch, isSnapshot)}-${timestamp}`;
   exec(`docker login -u ${username} -p ${password} ${host}`);
   core.info(`logged into ${host}`);
   exec(`docker build -f ${dockerfile} -t ${imageTag}:${targetVersion} ${context}`);
