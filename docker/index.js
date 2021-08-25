@@ -37,7 +37,7 @@ try {
 }
 
 if (!skipProvisioning) {
-  publishProvisioning(tychoPath, provisioningPath, provisioningArtifactUrl(username, password, host, path, name, version, currentBranch, isSnapshot, timestamp))
+  publishProvisioning(tychoPath, provisioningPath, provisioningArtifactUrl(username, password, host, path, name, version, currentBranch, isSnapshot, `-${timestamp}`))
     .then(provisioningTargetUrl => core.setOutput('url', provisioningTargetUrl))
     .catch((e) => core.setFailed(e));
 }
