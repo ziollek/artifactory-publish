@@ -8,6 +8,8 @@ module.exports = {
     const target = `${uuid.v4()}.zip`;
     const { error } = await exec(`cd ${source} && zip --quiet --symlinks --recurse-paths "$OLDPWD/${target}" * --exclude "$OLDPWD/${target} && cd $OLDPWD"`);
     if (error) throw new Error(`zip command error: ${error}`);
-    return fs.readFileSync(target);
+    const buffer = fs.readFileSync(target);
+    fs.rmSync(target);
+    return buffer;
   }
 };
