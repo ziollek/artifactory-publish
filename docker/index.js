@@ -22,10 +22,8 @@ core.info(`current branch: ${currentBranch}`);
 const isSnapshot = !['master', 'main'].includes(currentBranch);
 if (isSnapshot) core.info('this is a snapshot release');
 
-const timestamp = Date.now();
-
 try {
-  const targetVersion = `${artifactVersion(version, currentBranch, isSnapshot)}-${timestamp}`;
+  const targetVersion = artifactVersion(version, currentBranch, isSnapshot);
   exec(`docker login -u ${username} -p ${password} ${host}`);
   core.info(`logged into ${host}`);
   exec(`docker build -f ${dockerfile} -t ${imageTag}:${targetVersion} ${context}`);
@@ -37,7 +35,7 @@ try {
 }
 
 if (!skipProvisioning) {
-  publishProvisioning(tychoPath, provisioningPath, provisioningArtifactUrl(username, password, host, path, name, version, currentBranch, isSnapshot, `-${timestamp}`))
+  publishProvisioning(tychoPath, provisioningPath, provisioningArtifactUrl(username, password, host, path, name, version, currentBranch, isSnapshot))
     .then(provisioningTargetUrl => core.setOutput('url', provisioningTargetUrl))
     .catch((e) => core.setFailed(e));
 }

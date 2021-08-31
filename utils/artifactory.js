@@ -7,8 +7,8 @@ module.exports = {
     return artifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot, '-provisioning.zip', snapshotSuffix);
   },
 
-  artifactVersion(version, currentBranch, isSnapshot) {
-    return artifactVersion(version, currentBranch, isSnapshot);
+  artifactVersion(version, currentBranch, isSnapshot, snapshotSuffix = '-SNAPSHOT') {
+    return artifactVersion(version, currentBranch, isSnapshot, snapshotSuffix);
   }
 };
 
@@ -28,20 +28,26 @@ module.exports = {
  * @return {URL}
  */
 function artifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot, fileNameSuffix, snapshotSuffix) {
-  const snapshotFilenameSuffix = isSnapshot ? `-${getTimestamp()}` : '';
   const targetPath = group.replace(/\./g, '/');
-  const targetVersion = artifactVersion(version, currentBranch, isSnapshot);
-  const targetFileName = `${name}-${targetVersion}${snapshotFilenameSuffix}${fileNameSuffix}`;
+  const targetVersion = artifactVersion(version, currentBranch, isSnapshot, snapshotSuffix);
+  const targetFileName = artifactFileName(name, version, currentBranch, isSnapshot, fileNameSuffix);
   const credentials = username && password ? `${encodeURIComponent(username)}:${encodeURIComponent(password)}@` : '';
   return new URL(
-    `/artifactory/allegro-${isSnapshot ? 'snapshots' : 'releases'}-local/${targetPath}/${name}/${targetVersion}${isSnapshot ? snapshotSuffix : ''}/${targetFileName}`,
+    `/artifactory/allegro-${isSnapshot ? 'snapshots' : 'releases'}-local/${targetPath}/${name}/${targetVersion}/${targetFileName}`,
     `https://${credentials}${host}`
   );
 }
 
-function artifactVersion(version, currentBranch, isSnapshot) {
-  const branchSuffix = isSnapshot ? `-${slugify(currentBranch)}` : '';
-  return `${version}${branchSuffix}`;
+function artifactVersion(version, currentBranch, isSnapshot, snapshotSuffix = '-SNAPSHOT') {
+  const branchPart = isSnapshot ? `-${slugify(currentBranch)}` : '';
+  const snapshotPart = isSnapshot ? snapshotSuffix : '';
+  return `${version}${branchPart}${snapshotPart}`;
+}
+
+function artifactFileName(name, version, currentBranch, isSnapshot, fileNameSuffix) {
+  const branchPart = isSnapshot ? `-${slugify(currentBranch)}` : '';
+  const timestampPart = isSnapshot ? `-${getTimestamp()}` : '';
+  return `${name}-${version}${branchPart}${timestampPart}${fileNameSuffix}`;
 }
 
 function getTimestamp() {
@@ -53,7 +59,7 @@ function getTimestamp() {
 }
 
 function slugify(input) {
-  return input.toString().toLowerCase()
+  return input.toString()
     .replace(/\s+/g, '-')
     .replace(/\/+/g, '-')
     .replace(/[^\w-]+/g, '')

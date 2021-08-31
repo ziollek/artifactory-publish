@@ -24,6 +24,14 @@ describe('artifactory', () => {
       provisioningUrl: 'https://bgalek:password!%40%23@company.artifactory/artifactory/allegro-snapshots-local/pl/allegro/opbox/opbox-web/1.0.0-my-branch-SNAPSHOT/opbox-web-1.0.0-my-branch-20210819.112606-1-provisioning.zip'
     },
     {
+      name: 'opbox-web',
+      version: '1.0.0',
+      branch: 'feature/OPBOX-42-branch',
+      snapshot: true,
+      deployUrl: 'https://bgalek:password@company.artifactory/artifactory/allegro-snapshots-local/pl/allegro/opbox/opbox-web/1.0.0-feature-OPBOX-42-branch-SNAPSHOT/opbox-web-1.0.0-feature-OPBOX-42-branch-20210819.112606-1-deploy.zip',
+      provisioningUrl: 'https://bgalek:password!%40%23@company.artifactory/artifactory/allegro-snapshots-local/pl/allegro/opbox/opbox-web/1.0.0-feature-OPBOX-42-branch-SNAPSHOT/opbox-web-1.0.0-feature-OPBOX-42-branch-20210819.112606-1-provisioning.zip'
+    },
+    {
       name: 'listing-mobile-bff',
       version: '1.0.0',
       branch: 'master',
