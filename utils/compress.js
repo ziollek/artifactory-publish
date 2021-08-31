@@ -9,7 +9,7 @@ module.exports = {
     const { error } = await exec(`cd ${source} && zip --quiet --symlinks --recurse-paths "$OLDPWD/${target}" * --exclude "$OLDPWD/${target} && cd $OLDPWD"`);
     if (error) throw new Error(`zip command error: ${error}`);
     const buffer = fs.readFileSync(target);
-    fs.rmSync(target);
+    fs.rmdirSync(target);
     return buffer;
   }
 };
