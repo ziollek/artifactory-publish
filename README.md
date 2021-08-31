@@ -7,7 +7,6 @@
 Action created for easy artifactory publications.
 
 ## artifactory-publish/maven
-![maven gh-stats](https://gh-stats.app/badge?action=allegro-actions/artifactory-publish/maven)
 
 This action packages (zip) and uploads your application to artifactory. By default, it handles fat-jars. This action can
 also be used to package a directory.
@@ -78,7 +77,6 @@ steps:
 ```
 
 ## artifactory-publish/npm
-![npm gh-stats](https://gh-stats.app/badge?action=allegro-actions/artifactory-publish/npm)
 
 This action publishes npm package to artifactory npm registry.
 
