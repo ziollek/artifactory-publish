@@ -9,9 +9,12 @@ inputs:
   host:
     description: 'Artifactory hostname'
     required: true
+  email:
+    description: 'Artifactory email'
+    required: false
   username:
     description: 'Artifactory username'
-    required: true
+    required: false
   password:
     description: 'Artifactory password'
     required: true

@@ -1,4 +1,4 @@
-const { deployArtifactUrl, provisioningArtifactUrl } = require('./artifactory');
+const { deployArtifactUrl, provisioningArtifactUrl } = require('../artifactory');
 
 describe('artifactory', () => {
 

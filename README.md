@@ -7,6 +7,7 @@
 Action created for easy artifactory publications.
 
 ## artifactory-publish/maven
+![maven gh-stats](https://gh-stats.app/badge?action=allegro-actions/artifactory-publish/maven)
 
 This action packages (zip) and uploads your application to artifactory. By default, it handles fat-jars. This action can
 also be used to package a directory.
@@ -77,15 +78,21 @@ steps:
 ```
 
 ## artifactory-publish/npm
+![npm gh-stats](https://gh-stats.app/badge?action=allegro-actions/artifactory-publish/npm)
 
 This action publishes npm package to artifactory npm registry.
+
+When running on `main` or `master` branch this action will publish your package with `latest` npm tag.
+If you're running on a different branch your package will be available with npm tag containing current branch name.
+
+For example - if you run this action on `feature/TICKET-1234-good-stuff` branch, you will be able to install it using: `npm install my-package@feature-TICKET-1234-good-stuff`.
 
 ```
 steps:
   - uses: allegro-actions/artifactory-publish/npm@v1
     with:
       host: company.artifactory.allegro
-      username: ${{ secrets.ARTIFACTORY_USERNAME }}
+      email: ${{ secrets.ARTIFACTORY_EMAIL }}
       password: ${{ secrets.ARTIFACTORY_PASSWORD }}
 ```
 

@@ -1,16 +1,38 @@
-const { execSync: exec } = require('child_process');
+const path = require('path');
 const core = require('@actions/core');
-
-const host = core.getInput('host');
-const username = core.getInput('username');
-const password = core.getInput('password');
+const { reportAction } = require('@gh-stats/reporter');
+const assert = require('assert').strict;
+const action = require('./action');
+const { getBranchName } = require('../utils/git-commands');
 
 try {
-  exec(`echo "registry=https://${host}/artifactory/api/npm/group-npm" > .npmrc`);
-  exec('export npm_config_always_auth=true');
-  exec(`export npm_config__auth=${password}`);
-  exec(`export npm_config_email=${username}`);
-  exec('npm publish');
+  const host = core.getInput('host');
+  const username = core.getInput('username');
+  const email = core.getInput('email');
+  const password = core.getInput('password');
+
+  assert(host, '`host` is not provided!');
+  assert(email || username, '`email` is not provided!');
+  assert(password, '`password` is not provided!');
+  
+  const packageJson =  require(path.join(process.env['GITHUB_WORKSPACE'], 'package.json'));
+
+  const info = action({
+    packageVersion: packageJson.version,
+    branchName: getBranchName(),
+    currentDate: new Date(),
+    host: core.getInput('host'),
+    username: core.getInput('username'),
+    email: core.getInput('email'),
+    password: core.getInput('password'),
+  });
+
+  console.log('');
+  console.log(`* Published ${packageJson.name}`);
+  console.log(`*    version: ${info.version}`);
+  console.log(`*    tag:     ${info.version}`);
 } catch (e) {
   core.setFailed(e);
 }
+
+reportAction();
