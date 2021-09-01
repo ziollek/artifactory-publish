@@ -11,6 +11,7 @@ const password = core.getInput('password');
 const name = core.getInput('name');
 const group = core.getInput('group');
 const buildDir = core.getInput('buildDir');
+const includeDotFiles = core.getInput('includeDotFiles');
 const version = core.getInput('version');
 const tychoPath = core.getInput('tycho');
 const provisioningPath = core.getInput('provisioning');
@@ -24,7 +25,7 @@ const isSnapshot = !['master', 'main'].includes(currentBranch);
 if (isSnapshot) core.info('this is a snapshot release');
 
 if (buildDir) {
-  publishBuildDir(buildDir, deployArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot))
+  publishBuildDir(buildDir, !!includeDotFiles, deployArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot))
     .catch((e) => core.setFailed(e));
 } else {
   publishDistributions(distributionsDir, deployArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot))

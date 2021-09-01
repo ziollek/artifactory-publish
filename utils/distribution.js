@@ -35,11 +35,12 @@ module.exports = {
   /**
    * upload directory
    * @param {String} buildDir
+   * @param {Boolean} includeDotFiles
    * @param {URL} deployArtifactUrl
    * @return {Promise<void>}
    */
-  publishBuildDir(buildDir, deployArtifactUrl) {
-    return compressDirectory(buildDir)
+  publishBuildDir(buildDir, includeDotFiles, deployArtifactUrl) {
+    return compressDirectory(buildDir, includeDotFiles)
       .then(data => fetch(deployArtifactUrl.toString(), { method: 'PUT', body: data }))
       .then(response => response.status)
       .then((status) => {

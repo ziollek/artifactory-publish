@@ -39,6 +39,9 @@ inputs:
     description: 'Provisioning directory path'
     required: true
     default: './provisioning'
+  includeDotFiles:
+    description: 'Include dot files in build zip'
+    required: false
 
 runs:
   using: 'node12'

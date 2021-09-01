@@ -38,6 +38,7 @@ steps:
       group: pl.allegro.opbox
       buildDir: ./build
       version: 1.0.0-SNAPSHOT
+      includeDotFiles: true # include files like .env in build zip
 ```
 
 ### Outputs
