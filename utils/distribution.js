@@ -9,7 +9,7 @@ module.exports = {
    * upload distZip
    * @param {String} distributionsDir
    * @param {URL} deployArtifactUrl
-   * @return {Promise<URL>}
+   * @return {Promise<void>}
    */
   publishDistributions(distributionsDir, deployArtifactUrl) {
     return fs.promises.readdir(distributionsDir, { withFileTypes: true })
@@ -29,7 +29,6 @@ module.exports = {
         deployArtifactUrl.username = null;
         deployArtifactUrl.password = null;
         core.info(`${deployArtifactUrl} uploaded.`);
-        return deployArtifactUrl;
       });
   },
 
@@ -37,7 +36,7 @@ module.exports = {
    * upload directory
    * @param {String} buildDir
    * @param {URL} deployArtifactUrl
-   * @return {Promise<URL>}
+   * @return {Promise<void>}
    */
   publishBuildDir(buildDir, deployArtifactUrl) {
     return compressDirectory(buildDir)
@@ -53,7 +52,6 @@ module.exports = {
         deployArtifactUrl.username = null;
         deployArtifactUrl.password = null;
         core.info(`${deployArtifactUrl} uploaded.`);
-        return deployArtifactUrl;
       });
   }
 };
