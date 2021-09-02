@@ -41,6 +41,9 @@ inputs:
   skipProvisioning:
     description: 'Skip provisioning publish'
     required: false
+  buildArgs:
+    description: 'Multiline string with build args of the form ARG=VALUE'
+    required: false
 
 runs:
   using: 'node12'

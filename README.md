@@ -60,7 +60,7 @@ steps:
       version: 1.0.0-SNAPSHOT
 ```
 
-Optionally, you can also specify `context` and `dockerfile`:
+Optionally, you can also specify `context`, `dockerfile` and `buildArgs`:
 
 ```
 steps:
@@ -74,6 +74,9 @@ steps:
       version: 1.0.0-SNAPSHOT
       context: src
       dockerfile: docker/Dockerfile
+      buildArgs: |
+        ARG1=foo
+        ARG2=bar
 ```
 
 ## artifactory-publish/npm

@@ -14,6 +14,7 @@ const context = core.getInput('context') || '.';
 const tychoPath = core.getInput('tycho');
 const provisioningPath = core.getInput('provisioning');
 const skipProvisioning = core.getInput('skipProvisioning');
+const buildArgs = core.getMultilineInput('buildArgs') || [];
 
 const imageTag = `${host}/${path}/${name}`;
 
@@ -26,7 +27,8 @@ try {
   const targetVersion = artifactVersion(version, currentBranch, isSnapshot);
   exec(`docker login -u ${username} -p ${password} ${host}`);
   core.info(`logged into ${host}`);
-  exec(`docker build -f ${dockerfile} -t ${imageTag}:${targetVersion} ${context}`);
+  const buildArgsPart = buildArgs.map(arg => `--build-arg ${arg}`).join(' ');
+  exec(`docker build -f ${dockerfile} -t ${imageTag}:${targetVersion} ${buildArgsPart} ${context}`);
   core.info('docker build successfully');
   exec(`docker push ${imageTag}:${targetVersion}`);
   core.info(`docker push finished ${imageTag}:${targetVersion}`);
