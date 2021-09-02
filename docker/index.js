@@ -25,6 +25,7 @@ if (isSnapshot) core.info('this is a snapshot release');
 
 try {
   const targetVersion = artifactVersion(version, currentBranch, isSnapshot);
+  core.setOutput('tag', targetVersion);
   exec(`docker login -u ${username} -p ${password} ${host}`);
   core.info(`logged into ${host}`);
   const buildArgsPart = buildArgs.map(arg => `--build-arg ${arg}`).join(' ');

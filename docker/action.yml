@@ -1,9 +1,11 @@
-name: "artifactory dokcer publish"
-description: "Uploads artifact to dockerhub"
+name: 'artifactory docker publish'
+description: 'Uploads artifact to dockerhub'
 
 outputs:
   url:
-    description: "artifact url"
+    description: 'provisioning artifact url'
+  tag:
+    description: 'docker image tag'
 
 inputs:
   host:
