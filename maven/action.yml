@@ -42,6 +42,7 @@ inputs:
   includeDotFiles:
     description: 'Include dot files in build zip'
     required: false
+    default: 'false'
 
 runs:
   using: 'node12'
