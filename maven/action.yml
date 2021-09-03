@@ -43,6 +43,10 @@ inputs:
     description: 'Include dot files in build zip'
     required: false
     default: 'false'
+  release-tag-prefix:
+    description: 'Prefix for release tag detection'
+    required: false
+    default: 'v'
 
 runs:
   using: 'node12'
