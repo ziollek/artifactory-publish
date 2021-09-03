@@ -41,6 +41,12 @@ steps:
       includeDotFiles: true # include files like .env in build zip
 ```
 
+Release (not SNAPSHOT) version will be published when:
+* on `master`/`main` branch
+* on commit with tag matching semver convention
+
+If you use prefix other than `v` (e.g. v1.0.1) you need to specify this prefix as `release-tag-prefix` property.
+
 ### Outputs
 
 No outputs.

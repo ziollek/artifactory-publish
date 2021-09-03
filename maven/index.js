@@ -23,20 +23,12 @@ const currentBranch = getBranchName();
 
 reportAction();
 
-function stripReleaseTagPrefix(tag) {
-  return tag.replace(releaseTagPrefix, '');
-}
-
-function validSemVer(tag) {
-  return semver.valid(stripReleaseTagPrefix(tag));
-}
-
 const currentTagNames = exec('git tag --points-at=HEAD').toString().split('\n');
 core.info(`current branch: ${currentBranch}`);
-core.info(`current tag names: ${currentTagNames}`);
+core.info(`current tag names: ${currentTagNames.join(',')}`);
 core.info(`releaseTagPrefix: ${releaseTagPrefix}`);
 
-const isSnapshot = !['master', 'main'].includes(currentBranch) && !validSemVer(currentBranch) && !currentTagNames.some( tag => validSemVer(tag));
+const isSnapshot = !['master', 'main'].includes(currentBranch) && !validSemVer(currentBranch) && !currentTagNames.some(tag => validSemVer(tag));
 if (isSnapshot) core.info('this is a snapshot release');
 
 if (buildDir) {
@@ -49,3 +41,12 @@ if (buildDir) {
 
 publishProvisioning(tychoPath, provisioningPath, provisioningArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot))
   .catch((e) => core.setFailed(e));
+
+function stripReleaseTagPrefix(tag) {
+  return tag.replace(releaseTagPrefix, '');
+}
+
+function validSemVer(tag) {
+  return semver.valid(stripReleaseTagPrefix(tag));
+}
+
