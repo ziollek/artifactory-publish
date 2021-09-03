@@ -4,6 +4,8 @@ const { deployArtifactUrl, provisioningArtifactUrl } = require('../utils/artifac
 const { publishProvisioning } = require('../utils/provisioning');
 const { publishBuildDir, publishDistributions } = require('../utils/distribution');
 const { getBranchName } = require('../utils/git-commands');
+const semver = require('semver');
+const { execSync: exec } = require('child_process');
 
 const host = core.getInput('host');
 const username = core.getInput('username');
@@ -16,12 +18,25 @@ const version = core.getInput('version');
 const tychoPath = core.getInput('tycho');
 const provisioningPath = core.getInput('provisioning');
 const distributionsDir = core.getInput('distributionsDir');
+const releaseTagPrefix = core.getInput('releaseTagPrefix');
 const currentBranch = getBranchName();
 
 reportAction();
 
+function stripReleaseTagPrefix(tag) {
+  return tag.replace(releaseTagPrefix, '');
+}
+
+function validSemVer(tag) {
+  return semver.valid(stripReleaseTagPrefix(tag));
+}
+
+const currentTagNames = exec('git tag --points-at=HEAD').toString().split('\n');
 core.info(`current branch: ${currentBranch}`);
-const isSnapshot = !['master', 'main'].includes(currentBranch);
+core.info(`current tag names: ${currentTagNames}`);
+core.info(`releaseTagPrefix: ${releaseTagPrefix}`);
+
+const isSnapshot = !['master', 'main'].includes(currentBranch) && !validSemVer(currentBranch) && !currentTagNames.some( tag => validSemVer(tag));
 if (isSnapshot) core.info('this is a snapshot release');
 
 if (buildDir) {
