@@ -46,7 +46,7 @@ inputs:
   release-tag-prefix:
     description: 'Prefix for release tag detection'
     required: false
-    default: v
+    default: 'v'
 
 runs:
   using: 'node12'
