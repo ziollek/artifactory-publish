@@ -30,7 +30,7 @@ try {
   console.log('');
   console.log(`* Published ${packageJson.name}`);
   console.log(`*    version: ${info.version}`);
-  console.log(`*    tag:     ${info.version}`);
+  console.log(`*    tag:     ${info.tag}`);
 } catch (e) {
   core.setFailed(e);
 }
