@@ -1,10 +1,6 @@
 name: "artifactory maven publish"
 description: "Uploads artifact to maven"
 
-outputs:
-  url:
-    description: "artifact url"
-
 inputs:
   host:
     description: 'Artifactory hostname'
@@ -28,7 +24,7 @@ inputs:
     description: 'Directory to make artifact from'
     required: false
   distributionsDir:
-    description: 'Directory to distributions zip'
+    description: 'Directory containing distribution zip files'
     required: false
     default: './build/distributions'
   tycho:
