@@ -31,9 +31,6 @@ core.info(`releaseTagPrefix: ${releaseTagPrefix}`);
 const isSnapshot = !['master', 'main'].includes(currentBranch) && !validSemVer(currentBranch) && !currentTagNames.some(tag => validSemVer(tag));
 if (isSnapshot) core.info('this is a snapshot release');
 
-publishProvisioning(tychoPath, provisioningPath, provisioningArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot))
-  .catch((e) => core.setFailed(e));
-
 if (buildDir) {
   publishBuildDir(buildDir, includeDotFiles, deployArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot))
     .catch((e) => core.setFailed(e));
@@ -41,6 +38,9 @@ if (buildDir) {
   publishDistributions(distributionsDir, deployArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot))
     .catch((e) => core.setFailed(e));
 }
+
+publishProvisioning(tychoPath, provisioningPath, provisioningArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot))
+  .catch((e) => core.setFailed(e));
 
 function stripReleaseTagPrefix(tag) {
   return tag.replace(releaseTagPrefix, '');
