@@ -11,7 +11,7 @@ module.exports = {
    * @param {String} tychoPath
    * @param {String} provisioningPath
    * @param {URL} provisioningTargetUrl
-   * @return {Promise<URL>}
+   * @return {Promise<void>}
    */
   publishProvisioning: (tychoPath, provisioningPath, provisioningTargetUrl) => {
     if (!fs.existsSync(provisioningPath)) {
@@ -24,7 +24,7 @@ module.exports = {
         fs.writeFileSync(path.join(provisioningPath, 'deployment.yml'), fs.readFileSync(tychoPath, 'utf8'));
       }
     }
-    return compressDirectory(provisioningPath)
+    return compressDirectory(provisioningPath, false)
       .then(data => fetch(provisioningTargetUrl.toString(), { method: 'PUT', body: data }))
       .then(response => response.status)
       .then((status) => {
@@ -37,7 +37,6 @@ module.exports = {
         provisioningTargetUrl.username = null;
         provisioningTargetUrl.password = null;
         core.info(`${provisioningTargetUrl} uploaded.`);
-        return provisioningTargetUrl;
       });
   }
 };

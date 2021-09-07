@@ -33,14 +33,15 @@ if (isSnapshot) core.info('this is a snapshot release');
 
 if (buildDir) {
   publishBuildDir(buildDir, includeDotFiles, deployArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot))
+    .catch((e) => core.setFailed(e))
+    .then(() => publishProvisioning(tychoPath, provisioningPath, provisioningArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot)))
     .catch((e) => core.setFailed(e));
 } else {
   publishDistributions(distributionsDir, deployArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot))
+    .catch((e) => core.setFailed(e))
+    .then(() => publishProvisioning(tychoPath, provisioningPath, provisioningArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot)))
     .catch((e) => core.setFailed(e));
 }
-
-publishProvisioning(tychoPath, provisioningPath, provisioningArtifactUrl(username, password, host, group, name, version, currentBranch, isSnapshot))
-  .catch((e) => core.setFailed(e));
 
 function stripReleaseTagPrefix(tag) {
   return tag.replace(releaseTagPrefix, '');
