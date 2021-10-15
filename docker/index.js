@@ -20,7 +20,7 @@ const imageTag = `${host}/${path}/${name}`;
 
 const currentBranch = process.env['GITHUB_HEAD_REF'] || process.env['GITHUB_REF'].split('/').pop();
 core.info(`current branch: ${currentBranch}`);
-const isSnapshot = !['master', 'main'].includes(currentBranch);
+const isSnapshot = !process.env['GITHUB_REF'].startsWith('refs/tags/') && !['master', 'main'].includes(currentBranch);
 if (isSnapshot) core.info('this is a snapshot release');
 
 try {
